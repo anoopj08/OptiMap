@@ -26,7 +26,7 @@
         android:layout_weight="1"></ListView>
 
     <Button
-        android:id="@+id/add_place"
+        android:id="@+id/create_route"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="GO!" />

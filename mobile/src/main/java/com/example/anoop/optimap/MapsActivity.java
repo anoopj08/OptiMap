@@ -4,6 +4,7 @@ import android.*;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -25,6 +26,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -33,8 +35,12 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -44,6 +50,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Location mLastLocation;
     private PlacePicker.IntentBuilder placeBuilder = new PlacePicker.IntentBuilder();
     private int PLACE_PICKER_REQUEST = 1;
+    private LatLngBounds.Builder builder = new LatLngBounds.Builder();
+    private ArrayList<Marker> markers = new ArrayList<Marker>();
+    private ListView mListView;
+    //String[] places = new String[10];
+    private ArrayList<String> places = new ArrayList<String>();
+    private ArrayList<Place> listOfPlaces = new ArrayList<Place>();
+    private int numPlaces = 0;
+    private ArrayAdapter adapter;
+    private Intent mapIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +80,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
 
-
 //                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
         Button addButton = (Button) findViewById(R.id.add_place);
@@ -85,8 +99,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
+
+        Button goButton = (Button) findViewById(R.id.create_route);
+        goButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                System.out.println("creating route");
+                createRoute();
+
+            }
+        });
+
+
+        mListView = (ListView) findViewById(R.id.list);
+        adapter = new ArrayAdapter<String>(this,
+                R.layout.activity_listview, places);
+
+        //ListView listView = (ListView) findViewById(R.id.list);
+        mListView.setAdapter(adapter);
+
+
     }
 
+    public void createRoute(){
+        Uri gmmIntentUri = Uri.parse("google.navigation:q=Taronga+Zoo,+Sydney+Australia");
+        mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
+    }
 
     /**
      * Manipulates the map once available.
@@ -165,8 +204,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mGoogleApiClient);
         }
         LatLng currLoc = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-        //Marker curr = mMap.addMarker(new MarkerOptions().position(currLoc).title("Current Location"));
-        //markers.add(curr);
+        Marker curr = mMap.addMarker(new MarkerOptions().position(currLoc).title("Current Location"));
+        markers.add(curr);
+        curr.remove();
         mMap.animateCamera(CameraUpdateFactory.newLatLng(currLoc));
 
 //        if (mLastLocation != null) {
@@ -179,8 +219,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(this, data);
-                String toastMsg = String.format("Place: %s", place.getName());
-                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+                String placeName = String.format("Place: %s", place.getName());
+                //Toast.makeText(this, placeName, Toast.LENGTH_LONG).show();
+                LatLng currLatLng = place.getLatLng();
+                Marker curr = mMap.addMarker(new MarkerOptions().position(currLatLng).title(placeName));
+                markers.add(curr);
+                // places[numPlaces] = String.format("%s",place.getName());
+                places.add(String.format("%s", place.getName()));
+                listOfPlaces.add(place);
+                numPlaces++;
+                mListView.setAdapter(adapter);
+                for (Marker marker : markers) {
+                    builder.include(marker.getPosition());
+                }
+                LatLngBounds bounds = builder.build();
+                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 200));
             }
         }
     }
