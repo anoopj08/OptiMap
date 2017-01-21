@@ -13,13 +13,22 @@
         android:layout_weight="1"
         tools:context="com.example.anoop.optimap.MapsActivity" />
 
+    <Button
+        android:id="@+id/add_place"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Place" />
+
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"></ListView>
 
-    <!-- wassup -->
-
+    <Button
+        android:id="@+id/add_place"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="GO!" />
 
 </LinearLayout>
