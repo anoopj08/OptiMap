@@ -56,9 +56,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //String[] places = new String[10];
     private ArrayList<String> places = new ArrayList<String>();
     private ArrayList<Place> listOfPlaces = new ArrayList<Place>();
+
     private int numPlaces = 0;
     private ArrayAdapter adapter;
     private Intent mapIntent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,8 +123,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void createRoute(){
-        Uri gmmIntentUri = Uri.parse("google.navigation:q=Taronga+Zoo,+Sydney+Australia");
-        mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        String mapsURL = "https://maps.google.com/maps?saddr=";
+        CharSequence testID = "";
+        for(int x = 0 ; x < numPlaces ; x++){
+            Place currPlace = listOfPlaces.get(x);
+            Toast.makeText(this, currPlace.getId(), Toast.LENGTH_LONG).show();
+            testID = currPlace.getAddress();
+            if(x == 0){
+                mapsURL += currPlace.getAddress()+"&daddr=";
+            }else{
+                mapsURL += currPlace.getAddress();
+                if(x != numPlaces -1 ){
+                    mapsURL  += "+to:";
+                }else{
+                    //its lit
+                }
+            }
+        }
+        //mapIntent = new Intent(android.content.Intent.ACTION_VIEW,
+        //        Uri.parse("https://maps.google.com/maps?saddr=San+Francisco,+CA&daddr=Los+Angeles,+CA+to:Phoenix,+AZ+to:Houston,+TX+to:Jacksonville,+FL+to:New+York,+NY+to:Buffalo,+NY+to:Chicago,+IL+to:"+testID+"+to:Seattle,+WA+to:San+Jose,+CA"));
+        mapIntent = new Intent(android.content.Intent.ACTION_VIEW,
+                Uri.parse(mapsURL));
         mapIntent.setPackage("com.google.android.apps.maps");
         startActivity(mapIntent);
     }
