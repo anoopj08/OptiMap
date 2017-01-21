@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">OptiMap</string>
+    <string name="title_activity_maps">MainMap</string>
+</resources>
