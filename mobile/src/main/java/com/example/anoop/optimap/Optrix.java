@@ -46,7 +46,7 @@ public class Optrix extends MapsActivity{
     {
         Path og = paths.get(0);
         for (Path p : paths) {
-            if (p.getTime() < og.getTime()) {
+            if (p.getDuration() < og.getDuration()) {
                 og = p;
             }
         }

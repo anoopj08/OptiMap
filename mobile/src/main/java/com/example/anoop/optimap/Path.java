@@ -31,7 +31,7 @@ public class Path
     }
 
 
-    public long getTime()
+    public long getDuration()
     {
         return time;
     }

@@ -282,7 +282,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
-
+p
     public String getTime(Destination start, Destination finish) {
 
         String timeURL = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+start.getAddress()+"&destinations="+finish.getAddress()+"&traffic_model=best_guess&key=AIzaSyADKbSwzN-1LJx_xKVf2FWHftvSSNi51w8";
