@@ -13,7 +13,7 @@ public class Test extends MapsActivity
 
     public ArrayList<Path> paths;
 
-    public ArrayList<Destination> testExecute( ArrayList<Destination> a)
+    public ArrayList<Destination> optrixExecution( ArrayList<Destination> a)
     {
         dests = new ArrayList<Destination>();
         dests = a;
@@ -24,14 +24,14 @@ public class Test extends MapsActivity
         return opalgorithm.execute();
     }
 
-    public ArrayList<Path> createPaths( ArrayList<Destination> dests )
-    {
+    public ArrayList<Path> createPaths(ArrayList<Destination> dests) {
         ArrayList<Path> path = new ArrayList<Path>();
-
-        for(Destination d : dests)
+        for (Destination d : dests)
         {
-           Path p = new Path(getCurrDest(), d,0/*maketimecall*/ );
-            //path.add( p );
+            Destination curr = getCurrDest();
+            //String time = getTime(curr, d);
+            //Path p = new Path(curr, d, Long.valueOf((String)time.longValue() );
+            //path.add(p);
         }
         return path;
     }

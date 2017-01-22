@@ -55,8 +55,10 @@ public class Optrix extends MapsActivity{
 
     public ArrayList<Path> updatePaths(ArrayList<Destination> dests) {
         ArrayList<Path> path = new ArrayList<Path>();
-        for (Destination d : dests) {
-           Path p = new Path(getCurrDest(), d, 0/*maketimecall*/);
+        for (Destination d : dests)
+        {
+            Destination curr = getCurrDest();
+            //Path p = new Path(curr, d, getTime(curr, d));
             //path.add(p);
         }
         return path;
