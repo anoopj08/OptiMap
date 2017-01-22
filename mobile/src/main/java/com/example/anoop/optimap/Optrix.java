@@ -1,17 +1,6 @@
 package com.example.anoop.optimap;
 
-//import android.location.Location;
-
-//import com.google.android.gms.location.LocationServices;
-
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -23,11 +12,9 @@ public class Optrix extends MapsActivity{
 
     public ArrayList<Path> paths;
 
-    public ArrayList<Destination> settledNodes;
+    public ArrayList<Destination> fixedNodes;
 
-    public ArrayList<Destination> unSettledNodes;
-
-    public ArrayList<Path> unSettledPaths;
+    public ArrayList<Destination> unFixedNodes;
 
     public Optrix(Graph graph)
     {
@@ -36,22 +23,23 @@ public class Optrix extends MapsActivity{
     }
 
 
-    public void execute() {
-        settledNodes = new ArrayList<Destination>();
-        unSettledNodes = new ArrayList<Destination>();
+    public ArrayList<Destination> execute() {
+        fixedNodes = new ArrayList<Destination>();
+        unFixedNodes = new ArrayList<Destination>();
         for (Destination d : destinations) {
-            unSettledNodes.add(d);
+            unFixedNodes.add(d);
         }
-        while (unSettledNodes.size() > 0)
+        while (unFixedNodes.size() > 0)
         {
             Destination node = getFastest(paths);
-            settledNodes.add(node);
-            unSettledNodes.remove(node);
-            if (unSettledNodes.size() > 0)
+            fixedNodes.add(node);
+            unFixedNodes.remove(node);
+            if (unFixedNodes.size() > 0)
             {
-                paths = updatePaths(unSettledNodes);
+                paths = updatePaths(unFixedNodes);
             }
         }
+        return fixedNodes;
     }
 
     private Destination getFastest(ArrayList<Path> paths)
@@ -62,7 +50,6 @@ public class Optrix extends MapsActivity{
                 og = p;
             }
         }
-        /*currLoc = og //sets the "current location" to the next waypoint, assuming that the user will have it as their current location once they get there*/
         return og.getDestination();
     }
 

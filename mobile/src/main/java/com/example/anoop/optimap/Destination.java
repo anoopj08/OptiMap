@@ -6,16 +6,21 @@ package com.example.anoop.optimap;
 public class Destination
 {
 
-    public String longi;
+    public String address;
 
-    public String lati;
+    //public String lati;
 
-    public Destination(String latitude, String longitude)
+    public Destination(String address)//, String longitude)
     {
-        this.longi = longitude;
-        this.lati = latitude;
+        this.address = address;
+        //this.lati = latitude;
     }
 
+    public String getAddress()
+    {
+        return address;
+    }
+    /*
     public String getLong()
     {
         return longi;
@@ -25,5 +30,5 @@ public class Destination
     public String getLat()
     {
         return lati;
-    }
+    }*/
 }
