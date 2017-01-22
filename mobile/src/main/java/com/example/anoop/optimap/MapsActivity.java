@@ -68,7 +68,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean time = true;
     private GoogleMap mMap;
     private int ACCESS_FINE_LOCATION_CONSTANT;
-    private GoogleApiClient mGoogleApiClient;
+    public GoogleApiClient mGoogleApiClient;
     public Location mLastLocation;
     private PlacePicker.IntentBuilder placeBuilder = new PlacePicker.IntentBuilder();
     private int PLACE_PICKER_REQUEST = 1;
@@ -234,8 +234,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         getCurrLocation();
-        getCurrDest();
-        //fetchPostsAddr(mLastLocation);
+
+
         LatLng currLoc = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
         Marker curr = mMap.addMarker(new MarkerOptions().position(currLoc).title("Current Location"));
         markers.add(curr);
@@ -284,13 +284,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void getTime(Destination start, Destination finish) {
-        https://maps.googleapis.com/maps/api/distancematrix/json?origins=75%209th%20Ave%20New%20York%2C%20NY&destinations=Bridgewater%20Commons%2C%20Commons%20Way%2C%20Bridgewater%2C%20NJ%7C&departure_time=1541202457&traffic_model=best_guess&key=AIzaSyADKbSwzN-1LJx_xKVf2FWHftvSSNi51w8
-        
+
+        String timeURL = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+start.getAddress()+"&destinations="+finish.getAddress()+"&traffic_model=best_guess&key=AIzaSyADKbSwzN-1LJx_xKVf2FWHftvSSNi51w8";
+        Log.i("TIMEEEEEEEEEEEEEEEE",fetchPostsTime(timeURL));
     }
 
     private void fetchPostsTime(String URL) {
         StringRequest request = new StringRequest(Request.Method.GET, URL, onPostsLoaded, onPostsError);
         time = true;
+
         requestQueue.add(request);
     }
 
@@ -306,7 +308,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         requestQueue.add(request);
     }
 
-
+    List<String> timeList = new ArrayList<String>();
     private final Response.Listener<String> onPostsLoaded = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
@@ -319,7 +321,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 //Log.i("PostActivity", obj.toString());
 
-                List<String> list = new ArrayList<String>();
+
                 JSONArray array = null;
                 try {
                     array = obj.getJSONArray("rows");
@@ -335,12 +337,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     try {
                         obj = array.getJSONObject(i);
                         //tempArr = obj.getJSONArray("duration_in_traffic");
-                        list.add(array.getJSONObject(i).getString("duration_in_traffic"));
+                        timeList.add(array.getJSONObject(i).getString("duration_in_traffic"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
-                for (String s : list) {
+                for (String s : timeList) {
                     Log.i("PostActivity", s.substring(s.lastIndexOf(':') + 1, s.length() - 1));
                 }
             } else {
@@ -422,4 +424,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return mLastLocation;
     }
 }
-/*its lit af bros*/
+
