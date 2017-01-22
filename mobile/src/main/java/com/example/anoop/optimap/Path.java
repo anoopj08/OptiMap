@@ -5,29 +5,19 @@ package com.example.anoop.optimap;
  */
 public class Path
 {
-    private final String id;
+    public  Destination source;
 
-    private final Destination source;
+    public  Destination destination;
 
-    private final Destination destination;
-
-    private final long time;
+    public long time;
 
 
-    public Path( String id, Destination source, Destination destination, long time )
+    public Path( Destination source, Destination destination, long time )
     {
-        this.id = id;
         this.source = source;
         this.destination = destination;
         this.time = time;
     }
-
-
-    public String getId()
-    {
-        return id;
-    }
-
 
     public Destination getDestination()
     {

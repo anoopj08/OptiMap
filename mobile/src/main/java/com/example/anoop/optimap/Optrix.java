@@ -17,46 +17,45 @@ import java.util.Set;
 /**
  * Created by prashanthkoushik on 1/21/17.
  */
-public class Optrix {
-    private final ArrayList<Destination> destinations;
+public class Optrix extends MapsActivity{
 
-    private ArrayList<Path> paths;
+    public  ArrayList<Destination> destinations;
 
-    private ArrayList<Destination> settledNodes;
+    public ArrayList<Path> paths;
 
-    private ArrayList<Destination> unSettledNodes;
+    public ArrayList<Destination> settledNodes;
 
-    private ArrayList<Path> unSettledPaths;
+    public ArrayList<Destination> unSettledNodes;
 
-    //private Location mLastLocation;
+    public ArrayList<Path> unSettledPaths;
 
-
-    public Optrix(Graph graph) {
-        // create a copy of the array so that we can operate on this array
+    public Optrix(Graph graph)
+    {
         destinations = new ArrayList<Destination>(graph.getDestinations());
         paths = new ArrayList<Path>(graph.getPaths());
     }
 
 
-    public void execute(Destination source) {
+    public void execute() {
         settledNodes = new ArrayList<Destination>();
         unSettledNodes = new ArrayList<Destination>();
         for (Destination d : destinations) {
             unSettledNodes.add(d);
         }
-        while (unSettledNodes.size() > 0) {
+        while (unSettledNodes.size() > 0)
+        {
             Destination node = getFastest(paths);
             settledNodes.add(node);
             unSettledNodes.remove(node);
-            if (unSettledNodes.size() > 0) {
+            if (unSettledNodes.size() > 0)
+            {
                 paths = updatePaths(unSettledNodes);
-                source = node;
             }
         }
     }
 
-    private Destination getFastest(ArrayList<Path> paths) {
-        //Destination fast = paths.get(0).getDestination();
+    private Destination getFastest(ArrayList<Path> paths)
+    {
         Path og = paths.get(0);
         for (Path p : paths) {
             if (p.getTime() < og.getTime()) {
@@ -70,15 +69,9 @@ public class Optrix {
     public ArrayList<Path> updatePaths(ArrayList<Destination> dests) {
         ArrayList<Path> path = new ArrayList<Path>();
         for (Destination d : dests) {
-           // Path p = new Path("likeasomebody",/*currLoc*/, d, 0/*maketimecall*/);
+           Path p = new Path(getCurrDest(), d, 0/*maketimecall*/);
             //path.add(p);
         }
         return path;
     }
-
-   /* public Location getLoc()
-    {
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-    }*/
 }

@@ -9,9 +9,9 @@ import java.util.List;
 
 public class Graph //extends Optrix
 {
-    private final List<Destination> destinations;
+    public List<Destination> destinations;
 
-    private final List<Path> paths;
+    public List<Path> paths;
 
 
     public Graph( List<Destination> destinations, List<Path> paths )
@@ -32,4 +32,4 @@ public class Graph //extends Optrix
         return paths;
     }
 
-}//i have a VERY VERY VERY big space penis! A tremendous space penis. The best space penis. It's almost Presidential!
+}
