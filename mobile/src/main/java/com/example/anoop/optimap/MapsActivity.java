@@ -171,10 +171,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             Log.i("PostActivity", obj.toString());
 
-            ArrayList<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<String>();
             JSONArray array = null;
             try {
-                array = obj.getJSONArray("elements");
+                array = obj.getJSONArray("rows");
             } catch (JSONException e) {
                 e.printStackTrace();
             }

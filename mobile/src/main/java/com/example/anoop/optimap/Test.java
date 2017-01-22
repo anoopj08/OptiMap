@@ -20,7 +20,7 @@ public class Test
         paths = createPaths(dests);
         Graph graph = new Graph( dests, paths );
         Optrix opalgorithm = new Optrix( graph );
-        opalgorithm.execute( "source" );
+        //opalgorithm.execute( "source" );
         //LinkedList<Destination> path = opalgorithm.getPath( dests.get( 10 ) );
 
     }
@@ -32,8 +32,8 @@ public class Test
 
         for(Destination d : dests)
         {
-            Path p = new Path("likeasomebody",/*currLoc*/, d,0/*maketimecall*/ );
-            path.add( p );
+           // Path p = new Path("likeasomebody",/*currLoc*/, d,0/*maketimecall*/ );
+            //path.add( p );
         }
         return path;
     }

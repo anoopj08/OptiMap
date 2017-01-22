@@ -65,8 +65,8 @@ public class Optrix {
         //will have a global variable called currLoc (or something) that is the user's current location
 
         for (Destination d : dests) {
-            Path p = new Path("likeasomebody",/*currLoc*/, d, 0/*maketimecall*/);
-            path.add(p);
+           // Path p = new Path("likeasomebody",/*currLoc*/, d, 0/*maketimecall*/);
+            //path.add(p);
         }
         return path;
     }
