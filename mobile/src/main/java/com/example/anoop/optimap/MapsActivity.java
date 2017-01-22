@@ -130,8 +130,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Button goButton = (Button) findViewById(R.id.create_route);
         goButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                getTime(destinations.get(0),destinations.get(1));
                 createRoute();
-
             }
         });
 
@@ -147,7 +147,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-        fetchPostsTime();
+        //fetchPostsTime();
 
     }
 
@@ -283,13 +283,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public void getTime(Destination start, Destination finish) {
+    public String getTime(Destination start, Destination finish) {
 
         String timeURL = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+start.getAddress()+"&destinations="+finish.getAddress()+"&traffic_model=best_guess&key=AIzaSyADKbSwzN-1LJx_xKVf2FWHftvSSNi51w8";
-        Log.i("TIMEEEEEEEEEEEEEEEE",fetchPostsTime(timeURL));
+        fetchPostsTime(timeURL);
+        Log.i("TIMEEEEEEEEEEEEEEEE",timeList.get(0));
+        return timeList.get(0);
     }
-
-    private void fetchPostsTime(String URL) {
+    List<String> timeList = new ArrayList<String>();
+    private String fetchPostsTime(String URL) {
         StringRequest request = new StringRequest(Request.Method.GET, URL, onPostsLoaded, onPostsError);
         time = true;
 
@@ -308,7 +310,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         requestQueue.add(request);
     }
 
-    List<String> timeList = new ArrayList<String>();
+
     private final Response.Listener<String> onPostsLoaded = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
