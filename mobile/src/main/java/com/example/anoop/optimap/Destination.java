@@ -10,6 +10,7 @@ public class Destination
 
     final private String name;
 
+//the ID is the ADDRESS
 
     public Destination( String id, String name )
     {
