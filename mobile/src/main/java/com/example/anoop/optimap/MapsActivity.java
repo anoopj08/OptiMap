@@ -147,68 +147,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fetchPosts();
     }
 
-    private void fetchPosts() {
-        StringRequest request = new StringRequest(Request.Method.GET, testMapsURL, onPostsLoaded, onPostsError);
-        requestQueue.add(request);
-    }
-    private final Response.Listener<String> onPostsLoaded = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
 
-            JSONObject obj = null;
-            try {
-                obj = new JSONObject(response);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            Log.i("PostActivity", obj.toString());
-
-            List<String> list = new ArrayList<String>();
-            JSONArray array = null;
-            try {
-                array = obj.getJSONArray("rows");
-                obj = array.getJSONObject(0);
-                array = obj.getJSONArray("elements");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-
-
-            for(int i = 0 ; i < array.length() ; i++){
-                try {
-                    list.add(array.getJSONObject(i).getString("duration_in_traffic"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            for(String s : list){
-                Log.i("PostActivity", s);
-            }
-        }
-    };
-
-    private final Response.ErrorListener onPostsError = new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            Log.e("MapsActivity", error.toString());
-        }
-    };
-
-    public void createRoute(){
+    public void createRoute() {
         String mapsURL = "https://maps.google.com/maps?saddr=";
         CharSequence testID = "";
-        for(int x = 0 ; x < numPlaces ; x++){
+        for (int x = 0; x < numPlaces; x++) {
             Place currPlace = listOfPlaces.get(x);
             Toast.makeText(this, currPlace.getId(), Toast.LENGTH_LONG).show();
             testID = currPlace.getAddress();
-            if(x == 0){
-                mapsURL += currPlace.getAddress()+"&daddr=";
-            }else{
+            if (x == 0) {
+                mapsURL += currPlace.getAddress() + "&daddr=";
+            } else {
                 mapsURL += currPlace.getAddress();
-                if(x != numPlaces -1 ){
-                    mapsURL  += "+to:";
-                }else{
+                if (x != numPlaces - 1) {
+                    mapsURL += "+to:";
+                } else {
                     //its lit
                 }
             }
@@ -299,7 +252,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Marker curr = mMap.addMarker(new MarkerOptions().position(currLatLng).title(placeName));
                 markers.add(curr);
                 LatLng currDestLatLng = place.getLatLng();
-                Destination currDest = new Destination(Double.toString(currDestLatLng.latitude),Double.toString(currDestLatLng.longitude));
+                Destination currDest = new Destination(Double.toString(currDestLatLng.latitude), Double.toString(currDestLatLng.longitude));
                 destinations.add(currDest);
                 places.add(String.format("%s", place.getName()));
                 listOfPlaces.add(place);
@@ -314,7 +267,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    public void testPathTime(ArrayList<Destination> dests){
+    public void testPathTime(ArrayList<Destination> dests) {
         String testURI = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=Seattle&destinations=San+Francisco&key=AIzaSyADKbSwzN-1LJx_xKVf2FWHftvSSNi51w8";
         //String gonnawanna = //parse(testURI);
         //JSONObject jo = new JSON(readUrl(testURI));
@@ -334,13 +287,69 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public Destination getCurrDest(){
+    public void getTime(Destination start, Destination finish){
+        
+    }
+
+    private void fetchPosts() {
+        StringRequest request = new StringRequest(Request.Method.GET, testMapsURL, onPostsLoaded, onPostsError);
+        requestQueue.add(request);
+    }
+
+    private final Response.Listener<String> onPostsLoaded = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+
+            JSONObject obj = null;
+            try {
+                obj = new JSONObject(response);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            //Log.i("PostActivity", obj.toString());
+
+            List<String> list = new ArrayList<String>();
+            JSONArray array = null;
+            try {
+                array = obj.getJSONArray("rows");
+                obj = array.getJSONObject(0);
+                array = obj.getJSONArray("elements");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            JSONArray tempArr = null;
+            int numElem = array.length();
+            for (int i = 0; i < numElem; i++) {
+                try {
+                    obj = array.getJSONObject(i);
+                    //tempArr = obj.getJSONArray("duration_in_traffic");
+                    list.add(array.getJSONObject(i).getString("duration_in_traffic"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            for (String s : list) {
+                Log.i("PostActivity", s.substring(s.lastIndexOf(':')+1,s.length()-1));
+            }
+        }
+    };
+
+    private final Response.ErrorListener onPostsError = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Log.e("MapsActivity", error.toString());
+        }
+    };
+
+
+    public Destination getCurrDest() {
         mLastLocation = getCurrLocation();
-        Destination tempDest = new Destination(Double.toString(mLastLocation.getLatitude()),Double.toString(mLastLocation.getLongitude()));
+        Destination tempDest = new Destination(Double.toString(mLastLocation.getLatitude()), Double.toString(mLastLocation.getLongitude()));
         return tempDest;
     }
 
-    public Location getCurrLocation(){
+    public Location getCurrLocation() {
         if (ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
