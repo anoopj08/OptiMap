@@ -3,14 +3,12 @@ package com.example.anoop.optimap;
 /**
  * Created by anoop on 1/21/2017.
  */
-
 public class Destination
 {
     final private String id;
 
     final private String name;
 
-//the ID is the ADDRESS
 
     public Destination( String id, String name )
     {
@@ -69,4 +67,3 @@ public class Destination
     }
 
 }
-/*commentpk3*/

@@ -3,7 +3,6 @@ package com.example.anoop.optimap;
 /**
  * Created by anoop on 1/21/2017.
  */
-
 public class Path
 {
     private final String id;

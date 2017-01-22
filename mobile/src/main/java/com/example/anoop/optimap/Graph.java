@@ -4,34 +4,32 @@ package com.example.anoop.optimap;
  * Created by anoop on 1/21/2017.
  */
 
-import java.util.ArrayList;
-
+import java.util.List;
 
 
 public class Graph //extends Optrix
 {
-    private final ArrayList<Destination> destinations;
+    private final List<Destination> destinations;
 
-    private final ArrayList<Path> paths;
+    private final List<Path> paths;
 
 
-    public Graph( ArrayList<Destination> destinations, ArrayList<Path> paths )
+    public Graph( List<Destination> destinations, List<Path> paths )
     {
         this.destinations = destinations;
         this.paths = paths;
     }
 
 
-    public ArrayList<Destination> getDestinations()
+    public List<Destination> getDestinations()
     {
         return destinations;
     }
 
 
-    public ArrayList<Path> getPaths()
+    public List<Path> getPaths()
     {
         return paths;
     }
 
-}
-//i have a VERY VERY VERY big space penis! A tremendous space penis. The best space penis. It's almost Presidential!
+}//i have a VERY VERY VERY big space penis! A tremendous space penis. The best space penis. It's almost Presidential!
