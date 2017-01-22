@@ -65,6 +65,7 @@ import static android.net.Uri.parse;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    private boolean time = true;
     private GoogleMap mMap;
     private int ACCESS_FINE_LOCATION_CONSTANT;
     private GoogleApiClient mGoogleApiClient;
@@ -81,9 +82,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private int numPlaces = 0;
     private ArrayAdapter adapter;
     private Intent mapIntent;
-    private static final String testMapsURL = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=75%209th%20Ave%20New%20York%2C%20NY&destinations=Bridgewater%20Commons%2C%20Commons%20Way%2C%20Bridgewater%2C%20NJ%7CThe%20Mall%20At%20Short%20Hills%2C%20Morris%20Turnpike%2C%20Short%20Hills%2C%20NJ%7CMonmouth%20Mall%2C%20Eatontown%2C%20NJ%7CWestfield%20Garden%20State%20Plaza%2C%20Garden%20State%20Plaza%20Boulevard%2C%20Paramus%2C%20NJ%7CNewport%20Centre%20Mall%2C%20Jersey%20City%2C%20NJ&departure_time=1541202457&traffic_model=best_guess&key=AIzaSyADKbSwzN-1LJx_xKVf2FWHftvSSNi51w8";
+    private static final String testMapsURL = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=75%209th%20Ave%20New%20York%2C%20NY&destinations=Bridgewater%20Commons%2C%20Commons%20Way%2C%20Bridgewater%2C%20NJ%7C&departure_time=1541202457&traffic_model=best_guess&key=AIzaSyADKbSwzN-1LJx_xKVf2FWHftvSSNi51w8";
     private RequestQueue requestQueue;
-    private Gson gson;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,7 +146,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         requestQueue = Volley.newRequestQueue(getApplicationContext());
 
 
-        fetchPosts();
+
+        fetchPostsTime();
+
     }
 
 
@@ -154,7 +158,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (int x = 0; x < numPlaces; x++) {
             Place currPlace = listOfPlaces.get(x);
             Toast.makeText(this, currPlace.getId(), Toast.LENGTH_LONG).show();
-            testID = currPlace.getAddress();
+
             if (x == 0) {
                 mapsURL += currPlace.getAddress() + "&daddr=";
             } else {
@@ -171,7 +175,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapIntent = new Intent(android.content.Intent.ACTION_VIEW,
                 parse(mapsURL));
         mapIntent.setPackage("com.google.android.apps.maps");
-        testPathTime(destinations);
+        //testPathTime(destinations);
         //startActivity(mapIntent);
     }
 
@@ -230,7 +234,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         getCurrLocation();
-
+        getCurrDest();
+        //fetchPostsAddr(mLastLocation);
         LatLng currLoc = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
         Marker curr = mMap.addMarker(new MarkerOptions().position(currLoc).title("Current Location"));
         markers.add(curr);
@@ -267,15 +272,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    public void testPathTime(ArrayList<Destination> dests) {
-        String testURI = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=Seattle&destinations=San+Francisco&key=AIzaSyADKbSwzN-1LJx_xKVf2FWHftvSSNi51w8";
-        //String gonnawanna = //parse(testURI);
-        //JSONObject jo = new JSON(readUrl(testURI));
-        //import org.json.JSONObject;
-        //mapIntent.setPackage("com.google.android.apps.maps");
-
-        startActivity(mapIntent);
-    }
 
     @Override
     public void onConnectionSuspended(int i) {
@@ -287,50 +283,100 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public void getTime(Destination start, Destination finish){
+    public void getTime(Destination start, Destination finish) {
+        https://maps.googleapis.com/maps/api/distancematrix/json?origins=75%209th%20Ave%20New%20York%2C%20NY&destinations=Bridgewater%20Commons%2C%20Commons%20Way%2C%20Bridgewater%2C%20NJ%7C&departure_time=1541202457&traffic_model=best_guess&key=AIzaSyADKbSwzN-1LJx_xKVf2FWHftvSSNi51w8
         
     }
 
-    private void fetchPosts() {
-        StringRequest request = new StringRequest(Request.Method.GET, testMapsURL, onPostsLoaded, onPostsError);
+    private void fetchPostsTime(String URL) {
+        StringRequest request = new StringRequest(Request.Method.GET, URL, onPostsLoaded, onPostsError);
+        time = true;
         requestQueue.add(request);
     }
+
+    private void fetchPostsAddr(Location currLoc) {
+
+        String addrLookupURL = "https://maps.googleapis.com/maps/api/geocode/json?latlng=";
+
+        addrLookupURL += currLoc.getLatitude() + "," + currLoc.getLongitude() + "&key=AIzaSyCo0zrnSizGD1g4BPh4IA4ncHRntmmnv90";
+
+
+        StringRequest request = new StringRequest(Request.Method.GET, addrLookupURL, onPostsLoaded, onPostsError);
+        time = false;
+        requestQueue.add(request);
+    }
+
 
     private final Response.Listener<String> onPostsLoaded = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
-
-            JSONObject obj = null;
-            try {
-                obj = new JSONObject(response);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            //Log.i("PostActivity", obj.toString());
-
-            List<String> list = new ArrayList<String>();
-            JSONArray array = null;
-            try {
-                array = obj.getJSONArray("rows");
-                obj = array.getJSONObject(0);
-                array = obj.getJSONArray("elements");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            JSONArray tempArr = null;
-            int numElem = array.length();
-            for (int i = 0; i < numElem; i++) {
+            if (time) {
+                JSONObject obj = null;
                 try {
-                    obj = array.getJSONObject(i);
-                    //tempArr = obj.getJSONArray("duration_in_traffic");
-                    list.add(array.getJSONObject(i).getString("duration_in_traffic"));
+                    obj = new JSONObject(response);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }
-            for (String s : list) {
-                Log.i("PostActivity", s.substring(s.lastIndexOf(':')+1,s.length()-1));
+                //Log.i("PostActivity", obj.toString());
+
+                List<String> list = new ArrayList<String>();
+                JSONArray array = null;
+                try {
+                    array = obj.getJSONArray("rows");
+                    obj = array.getJSONObject(0);
+                    array = obj.getJSONArray("elements");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                JSONArray tempArr = null;
+                int numElem = array.length();
+                for (int i = 0; i < numElem; i++) {
+                    try {
+                        obj = array.getJSONObject(i);
+                        //tempArr = obj.getJSONArray("duration_in_traffic");
+                        list.add(array.getJSONObject(i).getString("duration_in_traffic"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                for (String s : list) {
+                    Log.i("PostActivity", s.substring(s.lastIndexOf(':') + 1, s.length() - 1));
+                }
+            } else {
+                JSONObject obj = null;
+                try {
+                    obj = new JSONObject(response);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //Log.i("PostActivity", obj.toString());
+
+                List<String> list = new ArrayList<String>();
+                JSONArray array = null;
+                try {
+                    array = obj.getJSONArray("results");
+//                    obj = array.getJSONObject(0);
+//                    array = obj.getJSONArray("address_components");
+                    //list.add(array.getJSONObject(0).getString("formatted_address"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                int numElem = array.length();
+                for (int i = 0; i < numElem; i++) {
+                    try {
+                        //obj = array.getJSONObject(i);
+                        //tempArr = obj.getJSONArray("duration_in_traffic");
+                        list.add(array.getJSONObject(i).getString("formatted_address"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                for (String s : list) {
+                    Log.i("PostActivity", s);
+                }
             }
         }
     };
@@ -344,7 +390,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     public Destination getCurrDest() {
-        mLastLocation = getCurrLocation();
+        getCurrLocation();
+
         Destination tempDest = new Destination(Double.toString(mLastLocation.getLatitude()), Double.toString(mLastLocation.getLongitude()));
         return tempDest;
     }
