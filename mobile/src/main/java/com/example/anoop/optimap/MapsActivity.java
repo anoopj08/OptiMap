@@ -68,7 +68,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private int ACCESS_FINE_LOCATION_CONSTANT;
     private GoogleApiClient mGoogleApiClient;
-    private Location mLastLocation;
+    public Location mLastLocation;
     private PlacePicker.IntentBuilder placeBuilder = new PlacePicker.IntentBuilder();
     private int PLACE_PICKER_REQUEST = 1;
     private LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -142,9 +142,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mListView.setAdapter(adapter);
 
         requestQueue = Volley.newRequestQueue(getApplicationContext());
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
-        gson = gsonBuilder.create();
+
 
         fetchPosts();
     }
@@ -157,12 +155,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         public void onResponse(String response) {
 
-//            Type collectionType = new TypeToken<Collection<PostModel>>(){}.getType();
-//            Collection<PostModel> posts = gson.fromJson(response, collectionType);
-
-            //PostModel post = gson.fromJson(response, PostModel.class);
-           // Log.i("PostActivity", posts.size() + " posts loaded.");
-            //for (PostModel post : posts) {
             JSONObject obj = null;
             try {
                 obj = new JSONObject(response);
@@ -175,9 +167,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             JSONArray array = null;
             try {
                 array = obj.getJSONArray("rows");
+                obj = array.getJSONObject(0);
+                array = obj.getJSONArray("elements");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+
+
             for(int i = 0 ; i < array.length() ; i++){
                 try {
                     list.add(array.getJSONObject(i).getString("duration_in_traffic"));
@@ -279,28 +276,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-            } else {
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this,
-                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION_CONSTANT
-                );
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        } else {
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                    mGoogleApiClient);
-        }
+        getCurrLocation();
 
         LatLng currLoc = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
         Marker curr = mMap.addMarker(new MarkerOptions().position(currLoc).title("Current Location"));
@@ -322,8 +298,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 LatLng currLatLng = place.getLatLng();
                 Marker curr = mMap.addMarker(new MarkerOptions().position(currLatLng).title(placeName));
                 markers.add(curr);
-
-                Destination currDest = new Destination((String) place.getAddress(), (String) place.getName());
+                LatLng currDestLatLng = place.getLatLng();
+                Destination currDest = new Destination(Double.toString(currDestLatLng.latitude),Double.toString(currDestLatLng.longitude));
                 destinations.add(currDest);
                 places.add(String.format("%s", place.getName()));
                 listOfPlaces.add(place);
@@ -356,6 +332,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    public Destination getCurrDest(){
+        mLastLocation = getCurrLocation();
+        Destination tempDest = new Destination(Double.toString(mLastLocation.getLatitude()),Double.toString(mLastLocation.getLongitude()));
+        return tempDest;
+    }
+
+    public Location getCurrLocation(){
+        if (ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION_CONSTANT
+                );
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        } else {
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+        }
+        return mLastLocation;
     }
 }
 /*its lit af bros*/
