@@ -1,5 +1,9 @@
 package com.example.anoop.optimap;
 
+//import android.location.Location;
+
+//import com.google.android.gms.location.LocationServices;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 
 /**
  * Created by prashanthkoushik on 1/21/17.
@@ -22,6 +27,8 @@ public class Optrix {
     private ArrayList<Destination> unSettledNodes;
 
     private ArrayList<Path> unSettledPaths;
+
+    //private Location mLastLocation;
 
 
     public Optrix(Graph graph) {
@@ -62,12 +69,16 @@ public class Optrix {
 
     public ArrayList<Path> updatePaths(ArrayList<Destination> dests) {
         ArrayList<Path> path = new ArrayList<Path>();
-        //will have a global variable called currLoc (or something) that is the user's current location
-
         for (Destination d : dests) {
            // Path p = new Path("likeasomebody",/*currLoc*/, d, 0/*maketimecall*/);
             //path.add(p);
         }
         return path;
     }
+
+   /* public Location getLoc()
+    {
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+    }*/
 }

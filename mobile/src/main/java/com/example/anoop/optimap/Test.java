@@ -1,12 +1,17 @@
 package com.example.anoop.optimap;
 
+import android.location.Location;
+
 import java.util.ArrayList;
+
+
 /**
  * Created by prashanthkoushik on 1/21/17.
  */
 
 public class Test
 {
+    private Location mLastLocation;
 
     private ArrayList<Destination> dests;
 

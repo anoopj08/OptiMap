@@ -11,10 +11,10 @@ public class Path
 
     private final Destination destination;
 
-    private final int time;
+    private final long time;
 
 
-    public Path( String id, Destination source, Destination destination, int time )
+    public Path( String id, Destination source, Destination destination, long time )
     {
         this.id = id;
         this.source = source;
@@ -41,7 +41,7 @@ public class Path
     }
 
 
-    public int getTime()
+    public long getTime()
     {
         return time;
     }
